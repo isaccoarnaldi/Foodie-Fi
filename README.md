@@ -4,7 +4,7 @@
 
 ## 📚 Table of Contents
 - [Business Task](#business-task)
-- [Entity Relationship Diagram](#entity-relationship-diagram)
+- [Dataset](#dataset)
 - [Question and Solution](#question-and-solution)
 
 Please note that all the information regarding the case study has been sourced from the following link: [here](https://8weeksqlchallenge.com/case-study-3/). 
@@ -16,12 +16,15 @@ Danny launched Foodie-Fi in 2020, a streaming service exclusively for cooking sh
 
 This case study focuses on using subscription-style digital data to answer various business questions.
 
-## Entity Relationship Diagram
+## Dataset
 
 
-**Tables: `plans` and `subscriptions`**  
+**Table 1: `plans`**  
 
-<img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> 		<img width="245" alt="image" src="https://user-images.githubusercontent.com/81607668/135704564-30250dd9-6381-490a-82cf-d15e6290cf3a.png">
+<img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> 		
+
+**Table 2: `subscriptions`**
+<img width="245" alt="image" src="https://user-images.githubusercontent.com/81607668/135704564-30250dd9-6381-490a-82cf-d15e6290cf3a.png">
 
 There are 5 customer plans.
 
