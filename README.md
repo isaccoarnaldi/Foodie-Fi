@@ -20,10 +20,12 @@ This case study focuses on using subscription-style digital data to answer vario
 
 
 **Table 1: `plans`**  
+
 <img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> 		
 
 *
 **Table 2: `subscriptions`**
+
 <img width="245" alt="image" src="https://user-images.githubusercontent.com/81607668/135704564-30250dd9-6381-490a-82cf-d15e6290cf3a.png">
 
 Foodie-Fi offers 5 customer plans:
