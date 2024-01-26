@@ -12,9 +12,9 @@ Please note that all the information regarding the case study has been sourced f
 ***
 
 ## Business Task
-Danny and his friends launched a new startup Foodie-Fi and started selling monthly and annual subscriptions, giving their customers unlimited on-demand access to exclusive food videos from around the world.
+Danny launched Foodie-Fi in 2020, a streaming service exclusively for cooking shows with monthly and annual subscriptions. The startup, founded with a data-driven approach, focuses on using subscription-style digital data for key business insights related to customer journeys, payments, and overall performance. 
 
-This case study focuses on using subscription style digital data to answer important business questions on customer journey, payments, and business performances.
+This case study focuses on using subscription-style digital data to answer important business questions.
 
 ## Entity Relationship Diagram
 
