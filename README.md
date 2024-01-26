@@ -52,9 +52,9 @@ Based on the 8 sample customers provided in the `subscriptions` table, write a b
 SELECT
       s.*,
       p.plan_name,  
-FROM  foodie_fi.plans AS p
-JOIN  foodie_fi.subscriptions AS s
-  ON  p.plan_id = sub.plan_id
+FROM foodie_fi.plans AS p
+JOIN foodie_fi.subscriptions AS s
+     ON p.plan_id = sub.plan_id
 WHERE s.customer_id IN (1,2,11,13,15,16,18,19);
 ```
 
