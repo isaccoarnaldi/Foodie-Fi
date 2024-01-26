@@ -14,15 +14,14 @@ Please note that all the information regarding the case study has been sourced f
 ## Business Task
 Danny launched Foodie-Fi in 2020, a streaming service exclusively for cooking shows with monthly and annual subscriptions. The startup, founded with a data-driven approach, focuses on using subscription-style digital data for key business insights related to customer journeys, payments, and overall performance. 
 
-This case study focuses on using subscription-style digital data to answer important business questions.
+This case study focuses on using subscription-style digital data to answer various business questions.
 
 ## Entity Relationship Diagram
 
-![image](https://user-images.githubusercontent.com/81607668/129744449-37b3229b-80b2-4cce-b8e0-707d7f48dcec.png)
 
-**Table 1: `plans`**
+**Tables: `plans` and `subscriptions`**  
 
-<img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png">
+<img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> <img width="245" alt="image" src="https://user-images.githubusercontent.com/81607668/135704564-30250dd9-6381-490a-82cf-d15e6290cf3a.png">
 
 There are 5 customer plans.
 
@@ -48,11 +47,7 @@ When customers churn, they will keep their access until the end of their current
 
 ## Question and Solution
 
-Please join me in executing the queries using PostgreSQL on [DB Fiddle](https://www.db-fiddle.com/f/rHJhRrXy5hbVBNJ6F6b9gJ/16). It would be great to work together on the questions!
 
-Additionally, I have also published this case study on [Medium](https://medium.com/analytics-vidhya/8-week-sql-challenge-case-study-3-foodie-fi-3d8497376ea9?sk=579afc01c30aa6149d85050f8a46ddef).
-
-If you have any questions, reach out to me on [LinkedIn](https://www.linkedin.com/in/katiehuangx/).
 
 ## 🎞️ A. Customer Journey
 
