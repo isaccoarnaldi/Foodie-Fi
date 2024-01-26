@@ -44,43 +44,30 @@ Cancellation results in a Churn plan record with null pricing, active until the 
 
 ## 🎞️ A. Customer Journey
 
-Based off the 8 sample customers provided in the sample subscriptions table below, write a brief description about each customer’s onboarding journey.
-
-**Table: Sample of `subscriptions` table**
-
-<img width="261" alt="Screenshot 2021-08-17 at 11 36 10 PM" src="https://user-images.githubusercontent.com/81607668/129756709-75919d79-e1cd-4187-a129-bdf90a65e196.png">
+Based on the 8 sample customers provided in the `subscriptions` table, write a brief description of each customer’s onboarding journey.
 
 **Answer:**
 
 ```sql
 SELECT
-  sub.customer_id,
-  plans.plan_id, 
-  plans.plan_name,  
-  sub.start_date
-FROM foodie_fi.plans
-JOIN foodie_fi.subscriptions AS sub
-  ON plans.plan_id = sub.plan_id
-WHERE sub.customer_id IN (1,2,11,13,15,16,18,19);
+      s.*,
+      p.plan_name,  
+FROM  foodie_fi.plans AS p
+JOIN  foodie_fi.subscriptions AS s
+  ON  p.plan_id = sub.plan_id
+WHERE s.customer_id IN (1,2,11,13,15,16,18,19);
 ```
 
 <img width="556" alt="image" src="https://user-images.githubusercontent.com/81607668/129758340-b7cd527c-31f3-4f33-8d99-5b0a4baab378.png">
 
-Based on the results above, I have selected three customers to focus on and will now share their onboarding journey.
+Based on the findings, three highlighted customers illustrate distinct onboarding journeys:
 
-_(Refer to the table below)_
+- Customer 1: Initiated a free trial on 1 Aug 2020, subscribing to the basic monthly plan on 8 Aug 2020 after the trial concluded.
 
-Customer 1: This customer initiated their journey by starting the free trial on 1 Aug 2020. After the trial period ended, on 8 Aug 2020, they subscribed to the basic monthly plan.
+- Customer 13: Started with a free trial on 15 Dec 2020, transitioning to the basic monthly plan on 22 Dec 2020. After three months, they upgraded to the pro monthly plan on 29 Mar 2021.
 
-<img width="560" alt="image" src="https://user-images.githubusercontent.com/81607668/129757897-df606bb6-aeb8-4235-8244-d61a3952a84a.png">
+- Customer 15: Began with a free trial on 17 Mar 2020, upgraded to the pro monthly plan on 24 Mar 2020. However, on 29 Apr 2020, the customer chose to terminate the subscription, resulting in churn until the paid subscription concludes.
 
-Customer 13: The onboarding journey for this customer began with a free trial on 15 Dec 2020. Following the trial period, on 22 Dec 2020, they subscribed to the basic monthly plan. After three months, on 29 Mar 2021, they upgraded to the pro monthly plan.
-
-<img width="512" alt="image" src="https://user-images.githubusercontent.com/81607668/129761134-7fa840f5-673e-4ec6-8831-e3971c1fcd50.png">
-
-Customer 15: Initially, this customer commenced their onboarding journey with a free trial on 17 Mar 2020. Once the trial ended, on 24 Mar 2020, they upgraded to the pro monthly plan. However, the following month, on 29 Apr 2020, the customer decided to terminate their subscription and subsequently churned until the paid subscription ends. 
-
-<img width="549" alt="image" src="https://user-images.githubusercontent.com/81607668/129761434-39009802-c813-437d-a292-ddd26ac8ac29.png">
 
 ***
 
