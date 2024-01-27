@@ -83,33 +83,44 @@ FROM foodie_fi.subscriptions AS s;
 ```
 
 **Answer:**
-
-<img width="159" alt="image" src="https://user-images.githubusercontent.com/81607668/129764903-bb0480aa-bf92-46f7-b0e1-f4d0f9e96ae1.png">
-
-| total_customers|
+| distinct_customers|
 | --------- | 
 | 1000      | 
 
-### 2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
+### 2. What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
 
-- Extracted the numerical value of the month from the `start_date` column using the `DATE_PART()` function
+- Extracted the numerical value of the month from the `start_date` column using the `DATE_TRUNC()` function
 - Filtered the results to include solely users with trial plan subscriptions (`plan_id = 0).
 
 ```sql
 SELECT
-  DATE_PART('month', s.start_date) AS month_date, -- Cast start_date as month in numerical format
-  COUNT(s.customer_id) AS trial_plan_subscriptions
+  DATE_TRUNC('month', s.start_date) AS month,
+  p.plan_name
+  COUNT(DISTINCT s.customer_id) AS count
 FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans p
   ON s.plan_id = p.plan_id
 WHERE s.plan_id = 0 -- Trial plan ID is 0
-GROUP BY DATE_PART('month',s.start_date)
+GROUP BY DATE_TRUNC('month', s.start_date),
+         p.plan_name
 ORDER BY month_date;
 ```
 
 **Answer:**
-
-<img width="366" alt="image" src="https://user-images.githubusercontent.com/81607668/129826377-f4da52b6-13de-4871-be98-bf438f2ac230.png">
+| month      | plan_name | count |
+| ---------- |-----------| ----- |
+| 2020-01-01 |   trial   | 88    |
+| 2020-02-01 |   trial   | 68    |
+| 2020-03-01 |   trial   | 94    |
+| 2020-04-01 |   trial   | 81    |
+| 2020-05-01 |   trial   | 88    |
+| 2020-06-01 |   trial   | 79    |
+| 2020-07-01 |   trial   | 89    |
+| 2020-08-01 |   trial   | 88    |
+| 2020-09-01 |   trial   | 87    |
+| 2020-10-01 |   trial   | 79    |
+| 2020-11-01 |   trial   | 75    |
+| 2020-12-01 |   trial   | 84    |
 
 Among all the months, March has the highest number of trial plans, while February has the lowest number of trial plans.
 
