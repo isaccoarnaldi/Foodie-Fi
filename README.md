@@ -57,7 +57,7 @@ FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans AS p
   ON s.plan_id = p.plan_id
 WHERE s.customer_id BETWEEN 1 AND 19
-ORDER BY s.customer_id, p.plan_id
+ORDER BY s.customer_id, p.plan_id;
 ```
 
 | customer\_id | plan\_id | start\_date |  plan\_name   |
@@ -114,12 +114,11 @@ FROM foodie_fi.subscriptions AS s;
 - Filtered the results to include solely users with trial plan subscriptions (`plan_id = 0).
 
 ```sql
-SELECT
-  DATE_TRUNC('month', s.start_date) AS month,
-  COUNT(DISTINCT s.customer_id) AS count
+SELECT TO_CHAR(DATE_TRUNC('month', s.start_date), 'YYYY-MM-DD') AS month,
+       COUNT(DISTINCT s.customer_id) AS count
 FROM foodie_fi.subscriptions AS s
 WHERE s.plan_id = 0 -- Trial plan ID is 0
-GROUP BY 1
+GROUP BY 1 -- 1 is first column, same as month
 ORDER BY month;
 ```
 
@@ -148,10 +147,9 @@ March has the highest number of trial plans, while February has the lowest numbe
 - Grouped results based on non-aggregate elements. 
 
 ````sql
-SELECT 
-  p.plan_id,
-  p.plan_name,
-  COUNT(s.customer_id) AS num_of_events
+SELECT p.plan_id,
+       p.plan_name,
+       COUNT(s.customer_id) AS num_of_events
 FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans AS p
   ON s.plan_id = p.plan_id
