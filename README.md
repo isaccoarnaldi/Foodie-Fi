@@ -19,7 +19,6 @@ This case study focuses on using subscription-style digital data to answer vario
 
 ## Dataset
 
-
 **Table 1: `plans`**  
 
 <img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> 		
@@ -40,8 +39,6 @@ Cancellation results in a Churn plan record with null pricing, active until the 
 ***
 
 ## Question and Solution
-
-
 
 ### A. Customer Journey
 Based on the 8 sample customers provided in the `subscriptions` table, write a brief description of each customer’s onboarding journey.
@@ -90,7 +87,6 @@ Based on the findings, three highlighted customers illustrate distinct onboardin
 
 - Customer 15: Began with a free trial on 17 Mar 2020, upgraded to the pro monthly plan on 24 Mar 2020. However, on 29 Apr 2020, the customer chose to terminate the subscription, resulting in churn until the paid subscription concludes.
 
-
 ***
 
 ### B. Data Analysis Questions
@@ -106,6 +102,8 @@ FROM foodie_fi.subscriptions AS s;
 | distinct_customers|
 | ----------------- | 
 | 1000              | 
+
+#
 
 #### 2. What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
 
@@ -137,6 +135,7 @@ ORDER BY month;
 | 2020-11-01 | 75    |
 | 2020-12-01 | 84    |
 
+#
 
 #### 3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
 
@@ -165,6 +164,8 @@ ORDER BY p.plan_id;
 | 3       | pro annual    | 63            |
 | 4       | churn         | 71            |
 
+#
+
 #### 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
 - Identified the count of customers who have churned, indicating those who terminated their subscription.
@@ -186,6 +187,7 @@ WHERE s.plan_id = 4; -- Filter results to customers with churn plan only
 | -------------| ----------------- |
 | 307          | 30.7              |
 
+#
 
 #### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
@@ -231,6 +233,8 @@ AND rank_num = 2; -- Customers who have churned immediately after trial have chu
 | ----------------- | ---------- |
 | 92                | 9          |
 
+#
+
 #### 6. What is the number and percentage of customer plans after their initial free trial?
 
 ```sql
@@ -266,6 +270,8 @@ ORDER BY next_plan_id;
 - More than 80% of Foodie-Fi's customers are on paid plans with a majority opting for Plans 1 and 2. 
 - There is potential for improvement in customer acquisition for Plan 3 as only a small percentage of customers are choosing this higher-priced plan.
 
+#
+
 #### 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
 ```sql
@@ -292,6 +298,7 @@ GROUP BY plan_id
 | 3        | 195                  | 19.5       |
 | 4        | 236                  | 23.6       |
 
+#
 
 #### 8. How many customers have upgraded to an annual plan in 2020?
 
@@ -306,6 +313,8 @@ WHERE plan_id = 3
 | num_of_customers |  
 |------------------|
 | 195              |  
+
+#
 
 #### 9. How many days on average does it take for a customer to upgrade to an annual plan from the day they join Foodie-Fi?
 
@@ -335,6 +344,8 @@ JOIN annual_plan AS annual
 | average_days_to_upgrade|  
 |------------------------|
 | 105                    |
+
+#
 
 #### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
@@ -385,6 +396,8 @@ ORDER BY avg_days_to_upgrade;
 | 270 - 300 days | 1                |
 | 300 - 330 days | 1                |
 | 330 - 360 days | 1                |
+
+#
 
 #### 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
