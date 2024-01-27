@@ -186,7 +186,7 @@ SELECT
 FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans AS p
   ON s.plan_id = p.plan_id
-WHERE plans.plan_id = 4; -- Filter results to customers with churn plan only
+WHERE p.plan_id = 4; -- Filter results to customers with churn plan only
 ```
 
 **Answer:**
@@ -211,7 +211,8 @@ WHERE plans.plan_id = 4; -- Filter results to customers with churn plan only
 ```sql
 WITH ranked_cte AS (
     SELECT s.customer_id, 
-           p.plan_id, 
+           p.plan_id,
+           p.plan_name, 
 	   ROW_NUMBER() OVER (PARTITION BY s.customer_id 
            ORDER BY s.start_date) AS row_num
     FROM foodie_fi.subscriptions AS s
