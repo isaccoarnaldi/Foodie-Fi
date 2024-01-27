@@ -50,8 +50,10 @@ Based on the 8 sample customers provided in the `subscriptions` table, write a b
 
 ```sql
 SELECT
-      s.*,
-      p.plan_name,  
+      s.customer_id,
+      p.plan_id,
+      p.plan_name,
+      s.start_date  
 FROM foodie_fi.plans AS p
 JOIN foodie_fi.subscriptions AS s
      ON p.plan_id = sub.plan_id
