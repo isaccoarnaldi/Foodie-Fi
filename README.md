@@ -50,17 +50,36 @@ Based on the 8 sample customers provided in the `subscriptions` table, write a b
 
 ```sql
 SELECT
-      s.customer_id,
-      p.plan_id,
+      s.*,
       p.plan_name,
-      s.start_date  
 FROM foodie_fi.plans AS p
 JOIN foodie_fi.subscriptions AS s
      ON p.plan_id = sub.plan_id
 WHERE s.customer_id IN (1,2,11,13,15,16,18,19);
 ```
 
-<img width="556" alt="image" src="https://user-images.githubusercontent.com/81607668/129758340-b7cd527c-31f3-4f33-8d99-5b0a4baab378.png">
+| customer\_id | plan\_id | start\_date |  plan\_name   |
+| ------------ | -------- | ----------- | ------------- |
+| 1            | 0        | 2020-08-01  |     trial     |
+| 1            | 1        | 2020-08-08  | basic monthly |
+| 2            | 0        | 2020-09-20  |     trial     |
+| 2            | 3        | 2020-09-27  |   pro annual  |
+| 11           | 0        | 2020-11-19  |     trial     |
+| 11           | 4        | 2020-11-26  |     churn     |
+| 13           | 0        | 2020-12-15  |     trial     |
+| 13           | 1        | 2020-12-22  | basic monthly |
+| 13           | 2        | 2021-03-29  |   pro monthly |
+| 15           | 0        | 2020-03-17  |     trial     |
+| 15           | 2        | 2020-03-24  |   pro monthly |
+| 15           | 4        | 2020-04-29  |     churn     |
+| 16           | 0        | 2020-05-31  |     trial     |
+| 16           | 1        | 2020-06-07  | basic monthly |
+| 16           | 3        | 2020-10-21  |   pro annual  |
+| 18           | 0        | 2020-07-06  |     trial     |
+| 18           | 2        | 2020-07-13  |   pro monthly |
+| 19           | 0        | 2020-06-22  |     trial     |
+| 19           | 2        | 2020-06-29  |   pro monthly |
+| 19           | 3        | 2020-08-29  |   pro annual  |
 
 Based on the findings, three highlighted customers illustrate distinct onboarding journeys:
 
