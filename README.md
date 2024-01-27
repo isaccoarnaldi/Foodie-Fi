@@ -107,7 +107,7 @@ FROM foodie_fi.subscriptions AS s;
 | ----------------- | 
 | 1000              | 
 
-### 2. What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
+#### 2. What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
 
 - Extracted the numerical value of the month from the `start_date` column using the `DATE_TRUNC()` function and `TO_CHAR()` to remove timestamps
 - Filtered the results to include solely users with trial plan subscriptions (`plan_id = 0`)
@@ -138,7 +138,7 @@ ORDER BY month;
 | 2020-12-01 | 84    |
 
 
-### 3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
+#### 3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
 
 - Counted the number of customers as the number of events.
 - Filtered plans occurring after the year 2020.
@@ -165,7 +165,7 @@ ORDER BY p.plan_id;
 | 3       | pro annual    | 63            |
 | 4       | churn         | 71            |
 
-### 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+#### 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
 - Identified the count of customers who have churned, indicating those who terminated their subscription.
 - Identified the overall number of customers, encompassing both active and churned individuals.
@@ -187,7 +187,7 @@ WHERE s.plan_id = 4; -- Filter results to customers with churn plan only
 | 307          | 30.7              |
 
 
-### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+#### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
 - Utilized Common Table Expression (CTE) named ranked_cte.
 	- Used `DENSE_RANK`() to assign rankings to customer plans: Trial Plan - Rank 1, Churned - Rank 2.
@@ -231,7 +231,7 @@ AND rank_num = 2; -- Customers who have churned immediately after trial have chu
 | ----------------- | ---------- |
 | 92                | 9          |
 
-### 6. What is the number and percentage of customer plans after their initial free trial?
+#### 6. What is the number and percentage of customer plans after their initial free trial?
 
 ```sql
 WITH next_plans AS (
@@ -266,7 +266,7 @@ ORDER BY next_plan_id;
 - More than 80% of Foodie-Fi's customers are on paid plans with a majority opting for Plans 1 and 2. 
 - There is potential for improvement in customer acquisition for Plan 3 as only a small percentage of customers are choosing this higher-priced plan.
 
-### 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+#### 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
 ```sql
 WITH cte AS(
@@ -293,7 +293,7 @@ GROUP BY plan_id
 | 4        | 236                  | 23.6       |
 
 
-### 8. How many customers have upgraded to an annual plan in 2020?
+#### 8. How many customers have upgraded to an annual plan in 2020?
 
 ```sql
 SELECT COUNT(DISTINCT s.customer_id) AS num_of_customers
@@ -307,7 +307,7 @@ WHERE plan_id = 3
 |------------------|
 | 195              |  
 
-### 9. How many days on average does it take for a customer to upgrade to an annual plan from the day they join Foodie-Fi?
+#### 9. How many days on average does it take for a customer to upgrade to an annual plan from the day they join Foodie-Fi?
 
 ````sql
 WITH trial_plan AS (
@@ -336,7 +336,7 @@ JOIN annual_plan AS annual
 |------------------------|
 | 105                    |
 
-### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+#### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
 To understand how the `WIDTH_BUCKET()` function works in creating buckets of 30-day periods, refer to this [StackOverflow](https://stackoverflow.com/questions/50518548/creating-a-bin-column-in-postgres-to-check-an-integer-and-return-a-string) answer.
 
@@ -386,7 +386,7 @@ ORDER BY avg_days_to_upgrade;
 | 300 - 330 days | 1                |
 | 330 - 360 days | 1                |
 
-### 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
+#### 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
 ```sql
 WITH ranked_cte AS (
