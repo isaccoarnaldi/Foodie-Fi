@@ -76,16 +76,14 @@ Based on the findings, three highlighted customers illustrate distinct onboardin
 ### 1. How many customers has Foodie-Fi ever had?
 
 ```sql
-SELECT COUNT(DISTINCT s.customer_id) AS unique_customers
+SELECT COUNT(DISTINCT s.customer_id) AS distinct_customers
 FROM foodie_fi.subscriptions AS s;
 ```
 
 **Answer:**
 
 <img width="159" alt="image" src="https://user-images.githubusercontent.com/81607668/129764903-bb0480aa-bf92-46f7-b0e1-f4d0f9e96ae1.png">
-*
 
-![image](https://user-images.githubusercontent.com/77529445/164981170-9edf1b3e-b27b-43b5-90c1-c6ff74463e73.png)
 
 ### 2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
 
