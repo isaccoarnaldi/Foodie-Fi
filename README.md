@@ -197,78 +197,46 @@ WHERE plans.plan_id = 4; -- Filter results to customers with churn plan only
 
 ### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
-Within a CTE called `ranked_cte`, determine which customers churned immediately after the trial plan by utilizing `ROW_NUMBER()` function to assign rankings to each customer's plans. 
-
-In this scenario, if a customer churned right after the trial plan, the plan rankings would appear as follows:
-- Trial Plan - Rank 1
-- Churned - Rank 2
-
-In the outer query:
-- Apply 2 conditions in the WHERE clause:
-  - Filter `plan_id = 4`. 
-  - Filter for customers who have churned immediately after their trial with `row_num = 2`.
-- Count the number of customers who have churned immediately after their trial period using a `CASE` statement by checking if the row number is 2 (`row_num = 2`) and the plan name is 'churn' (`plan_name = 'churn'`). 
-- Calculate the churn percentage by dividing the `churned_customers` count by the total count of distinct customer IDs in the `subscriptions` table. Round percentage to a whole number.
+- Utilized Common Table Expression (CTE) named ranked_cte.
+	- Used `ROW_NUMBER`() to assign rankings to customer plans: Trial Plan - Rank 1, Churned - Rank 2.
+- WHERE clause conditions:
+	- Filtered for `plan_id = 4`.
+	- Identified churn after trial with `row_num = 2`.
+- Counted churned customers using `CASE` statement:
+	- Checked `row_num = 2` and `plan_name = 'churn'`.
+- Calculated churn percentage:
+	- Divided count of churned customers by total distinct customer IDs.
+	- Rounded percentage to a whole number.
 
 ```sql
 WITH ranked_cte AS (
-  SELECT 
-    sub.customer_id, 
-    plans.plan_id, 
-	  ROW_NUMBER() OVER (
-      PARTITION BY sub.customer_id 
-      ORDER BY sub.start_date) AS row_num
-  FROM foodie_fi.subscriptions AS sub
-  JOIN foodie_fi.plans 
-    ON sub.plan_id = plans.plan_id
+    SELECT s.customer_id, 
+           p.plan_id, 
+	   ROW_NUMBER() OVER (PARTITION BY s.customer_id 
+           ORDER BY s.start_date) AS row_num
+    FROM foodie_fi.subscriptions AS s
+    JOIN foodie_fi.plans AS p 
+    ON s.plan_id = p.plan_id
 )
   
 SELECT 
-	COUNT(CASE 
-    WHEN row_num = 2 AND plan_name = 'churn' THEN 1 
+    COUNT(CASE WHEN row_num = 2 AND plan_name = 'churn' THEN 1 
     ELSE 0 END) AS churned_customers,
-	ROUND(100.0 * COUNT(
-    CASE 
-      WHEN row_num = 2 AND plan_name = 'churn' THEN 1 
-      ELSE 0 END) 
-	  / (SELECT COUNT(DISTINCT customer_id) 
-      FROM foodie_fi.subscriptions)
-  ) AS churn_percentage
+
+    ROUND(100.0 * COUNT(CASE WHEN row_num = 2 AND plan_name = 'churn' THEN 1 
+                       ELSE 0 END) 
+          / (SELECT COUNT(DISTINCT customer_id) 
+             FROM foodie_fi.subscriptions)
+          ) AS percentage
 FROM ranked_cte
 WHERE plan_id = 4 -- Filter to churn plan.
-  AND row_num = 2; -- Customers who have churned immediately after trial have churn plan ranked as 2.
-```
-
-Here's another solution using the `LEAD()` window function:
-```sql
-WITH ranked_cte AS (
-  SELECT 
-    sub.customer_id,  
-    plans.plan_name, 
-	  LEAD(plans.plan_name) OVER ( 
-      PARTITION BY sub.customer_id
-      ORDER BY sub.start_date) AS next_plan
-  FROM foodie_fi.subscriptions AS sub
-  JOIN foodie_fi.plans 
-    ON sub.plan_id = plans.plan_id
-)
-  
-SELECT 
-  COUNT(customer_id) AS churned_customers,
-  ROUND(100.0 * 
-    COUNT(customer_id) 
-    / (SELECT COUNT(DISTINCT customer_id) 
-      FROM foodie_fi.subscriptions)
-  ) AS churn_percentage
-FROM ranked_cte
-WHERE plan_name = 'trial' 
-  AND next_plan = 'churn;
+AND row_num = 2; -- Customers who have churned immediately after trial have churn plan ranked as 2.
 ```
 
 **Answer:**
-| frequency | percentage |
-| --------- | ---------- |
-| 92        | 9.2        |
+| churned_customers | percentage |
+| ----------------- | ---------- |
+| 92                | 9.2        |
 
 - A total of 92 customers churned immediately after the initial free trial period, representing 9.2% of the entire customer base.
 
