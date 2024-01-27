@@ -83,24 +83,23 @@ FROM foodie_fi.subscriptions AS s;
 **Answer:**
 
 <img width="159" alt="image" src="https://user-images.githubusercontent.com/81607668/129764903-bb0480aa-bf92-46f7-b0e1-f4d0f9e96ae1.png">
-
-
+*
+![image](https://user-images.githubusercontent.com/77529445/164981170-9edf1b3e-b27b-43b5-90c1-c6ff74463e73.png)
 
 ### 2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
 
-In other words, the question is asking for the monthly count of users on the trial plan subscription.
-- To start, extract the numerical value of month from `start_date` column using the `DATE_PART()` function, specifying the 'month' part of a date. 
-- Filter the results to retrieve only users with trial plan subscriptions (`plan_id = 0). 
+- Extracted the numerical value of the month from the `start_date` column using the `DATE_PART()` function
+- Filtered the results to include solely users with trial plan subscriptions (`plan_id = 0).
 
 ```sql
 SELECT
-  DATE_PART('month', start_date) AS month_date, -- Cast start_date as month in numerical format
-  COUNT(sub.customer_id) AS trial_plan_subscriptions
-FROM foodie_fi.subscriptions AS sub
+  DATE_PART('month', s.start_date) AS month_date, -- Cast start_date as month in numerical format
+  COUNT(s.customer_id) AS trial_plan_subscriptions
+FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans p
   ON s.plan_id = p.plan_id
 WHERE s.plan_id = 0 -- Trial plan ID is 0
-GROUP BY DATE_PART('month',start_date)
+GROUP BY DATE_PART('month',s.start_date)
 ORDER BY month_date;
 ```
 
