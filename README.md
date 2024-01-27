@@ -24,7 +24,7 @@ This case study focuses on using subscription-style digital data to answer vario
 
 <img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> 		
 
-*
+***
 **Table 2: `subscriptions`**
 
 <img width="261" alt="Screenshot 2021-08-17 at 11 36 10 PM" src="https://user-images.githubusercontent.com/81607668/129756709-75919d79-e1cd-4187-a129-bdf90a65e196.png">
