@@ -189,7 +189,7 @@ WHERE s.plan_id = 4; -- Filter results to customers with churn plan only
 ### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
 - Utilized Common Table Expression (CTE) named ranked_cte.
-	- Used `ROW_NUMBER`() to assign rankings to customer plans: Trial Plan - Rank 1, Churned - Rank 2.
+	- Used `DENSE_RANK`() to assign rankings to customer plans: Trial Plan - Rank 1, Churned - Rank 2.
 - WHERE clause conditions:
 	- Filtered for `plan_id = 4`.
 	- Identified churn after trial with `row_num = 2`.
@@ -204,25 +204,25 @@ WITH ranked_cte AS (
     SELECT s.customer_id, 
            p.plan_id,
            p.plan_name, 
-	   ROW_NUMBER() OVER (PARTITION BY s.customer_id 
-           ORDER BY s.start_date) AS row_num
+	   DENSE_RANK() OVER (PARTITION BY s.customer_id 
+           ORDER BY s.start_date) AS rank_num
     FROM foodie_fi.subscriptions AS s
     JOIN foodie_fi.plans AS p 
     ON s.plan_id = p.plan_id
 )
   
 SELECT 
-    COUNT(CASE WHEN row_num = 2 AND plan_name = 'churn' THEN 1 
+    COUNT(CASE WHEN rank_num = 2 AND plan_name = 'churn' THEN 1 
     ELSE 0 END) AS churned_customers,
 
-    ROUND(100.0 * COUNT(CASE WHEN row_num = 2 AND plan_name = 'churn' THEN 1 
+    ROUND(100.0 * COUNT(CASE WHEN rank_num = 2 AND plan_name = 'churn' THEN 1 
                        ELSE 0 END) 
           / (SELECT COUNT(DISTINCT customer_id) 
              FROM foodie_fi.subscriptions)
           ) AS percentage
 FROM ranked_cte
 WHERE plan_id = 4 -- Filter to churn plan.
-AND row_num = 2; -- Customers who have churned immediately after trial have churn plan ranked as 2.
+AND rank_num = 2; -- Customers who have churned immediately after trial have churn plan ranked as 2.
 ```
 
 **Answer:**
