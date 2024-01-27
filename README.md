@@ -84,6 +84,7 @@ FROM foodie_fi.subscriptions AS s;
 
 <img width="159" alt="image" src="https://user-images.githubusercontent.com/81607668/129764903-bb0480aa-bf92-46f7-b0e1-f4d0f9e96ae1.png">
 *
+
 ![image](https://user-images.githubusercontent.com/77529445/164981170-9edf1b3e-b27b-43b5-90c1-c6ff74463e73.png)
 
 ### 2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
