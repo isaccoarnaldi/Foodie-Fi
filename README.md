@@ -108,8 +108,8 @@ FROM foodie_fi.subscriptions AS s;
 
 ### 2. What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
 
-- Extracted the numerical value of the month from the `start_date` column using the `DATE_TRUNC()` function
-- Filtered the results to include solely users with trial plan subscriptions (`plan_id = 0).
+- Extracted the numerical value of the month from the `start_date` column using the `DATE_TRUNC()` function and `TO_CHAR()` to remove timestamps
+- Filtered the results to include solely users with trial plan subscriptions (`plan_id = 0`)
 
 ```sql
 SELECT TO_CHAR(DATE_TRUNC('month', s.start_date), 'YYYY-MM-DD') AS month,
@@ -136,7 +136,6 @@ ORDER BY month;
 | 2020-11-01 | 75    |
 | 2020-12-01 | 84    |
 
-March has the highest number of trial plans, while February has the lowest number of trial plans.
 
 ### 3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
 
@@ -167,12 +166,9 @@ ORDER BY p.plan_id;
 
 ### 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
-Firstly, I undertook the task of identifying:
-
-- The count of customers who have churned, indicating those who terminated their subscription.
-- The overall number of customers, encompassing both active and churned individuals.
-
-Next, in computing the churn rate, the calculation involved dividing the number of churned customers by the total customer count. The outcome was rounded to one decimal place.
+- Identified the count of customers who have churned, indicating those who terminated their subscription.
+- Identified the overall number of customers, encompassing both active and churned individuals.
+- In computing the churn rate, the calculation involved dividing the number of churned customers by the total customer count. The outcome was rounded to one decimal place.
 
 ```sql
 SELECT COUNT(DISTINCT s.customer_id) AS churn_count,
@@ -181,9 +177,7 @@ SELECT COUNT(DISTINCT s.customer_id) AS churn_count,
     	FROM foodie_fi.subscriptions)
       , 1) AS churn_percentage
 FROM foodie_fi.subscriptions AS s
-JOIN foodie_fi.plans AS p
-  ON s.plan_id = p.plan_id
-WHERE p.plan_id = 4; -- Filter results to customers with churn plan only
+WHERE s.plan_id = 4; -- Filter results to customers with churn plan only
 ```
 
 **Answer:**
