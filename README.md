@@ -244,23 +244,20 @@ AND row_num = 2; -- Customers who have churned immediately after trial have chur
 
 ```sql
 WITH next_plans AS (
-  SELECT 
-    customer_id, 
-    plan_id, 
-    LEAD(plan_id) OVER(
-      PARTITION BY customer_id 
-      ORDER BY plan_id) as next_plan_id
-  FROM foodie_fi.subscriptions
-)
+                   SELECT customer_id, 
+                          plan_id, 
+                          LEAD(plan_id) OVER(PARTITION BY customer_id 
+                                        ORDER BY plan_id) as next_plan_id
+                   FROM foodie_fi.subscriptions
+                   )
 
 SELECT 
-  next_plan_id AS plan_id, 
-  COUNT(customer_id) AS converted_customers,
-  ROUND(100 * 
-    COUNT(customer_id)::NUMERIC 
-    / (SELECT COUNT(DISTINCT customer_id) 
-      FROM foodie_fi.subscriptions)
-  ,1) AS conversion_percentage
+       next_plan_id AS plan_id, 
+       COUNT(customer_id) AS converted_customers,
+    ROUND(100 * COUNT(customer_id)::NUMERIC 
+    / (SELECT COUNT(DISTINCT customer_id)
+       FROM foodie_fi.subscriptions)
+   ,1) AS conversion_percentage
 FROM next_plans
 WHERE next_plan_id IS NOT NULL 
   AND plan_id = 0
@@ -269,7 +266,6 @@ ORDER BY next_plan_id;
 ```
 
 **Answer:**
-
 | plan_id | converted_customers | conversion_percentage |
 | ------- | ------------------- | --------------------- |
 | 1       | 546                 | 54.6                  |
@@ -282,42 +278,30 @@ ORDER BY next_plan_id;
 
 ### 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
-In the cte called `next_dates`, we begin by filtering the results to include only the plans with start dates on or before '2020-12-31'. To identify the next start date for each plan, we utilize the `LEAD()` window function.
-
-In the outer query,  we filter the results where the `next_date` is NULL. This step helps us identify the most recent plan that each customer subscribed to as of '2020-12-31'. 
-
-Lastly, we perform calculations to determine the total count of customers and the percentage of customers associated with each trial plan. 
-
 ```sql
-WITH next_dates AS (
-  SELECT
-    customer_id,
-    plan_id,
-  	start_date,
-    LEAD(start_date) OVER (
-      PARTITION BY customer_id
-      ORDER BY start_date
-    ) AS next_date
-  FROM foodie_fi.subscriptions
-  WHERE start_date <= '2020-12-31'
+WITH cte AS(
+           SELECT *,
+                  ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date DESC) AS rank
+           FROM foodie_fi.subscriptions
+           WHERE start_date <= '2020-12-31'
 )
-
-SELECT
-	plan_id, 
-	COUNT(DISTINCT customer_id) AS customers,
-  ROUND(100.0 * 
-    COUNT(DISTINCT customer_id)
-    / (SELECT COUNT(DISTINCT customer_id) 
-      FROM foodie_fi.subscriptions)
-  ,1) AS percentage
-FROM next_dates
-WHERE next_date IS NULL
-GROUP BY plan_id;
+SELECT plan_id,
+       COUNT(DISTINCT customer_id) AS number_of_customer,
+       ROUND(100 * COUNT(*) / SUM(COUNT(*)) OVER(), 1) AS percentage
+FROM cte
+WHERE rank = 1
+GROUP BY plan_id
 ```
 
 **Answer:**
+| plan\_id | number\_of\_customer | percentage |
+| -------- | -------------------- | ---------- |
+| 0        | 19                   | 1.9        |
+| 1        | 224                  | 22.4       |
+| 2        | 326                  | 32.6       |
+| 3        | 195                  | 19.5       |
+| 4        | 235                  | 23.6       |
 
-<img width="448" alt="image" src="https://user-images.githubusercontent.com/81607668/130024738-f16ad7dc-5fed-469f-9c6d-0a24453e1dcd.png">
 
 ### 8. How many customers have upgraded to an annual plan in 2020?
 
@@ -329,14 +313,11 @@ WHERE plan_id = 3
 ```
 
 **Answer:**
-
-<img width="160" alt="image" src="https://user-images.githubusercontent.com/81607668/129848711-3b64442a-5724-4723-bea7-e4515a8687ec.png">
-
-- 196 customers have upgraded to an annual plan in 2020.
+| num_of_customers |  
+|------------------|
+| 195              |  
 
 ### 9. How many days on average does it take for a customer to upgrade to an annual plan from the day they join Foodie-Fi?
-
-This question is straightforward and the query provided is self-explanatory. 
 
 ````sql
 WITH trial_plan AS (
@@ -357,8 +338,7 @@ WITH trial_plan AS (
 -- Find the average of the differences between the start date of a trial plan and a pro annual plan.
 SELECT 
   ROUND(
-    AVG(
-      annual.annual_date - trial.trial_date)
+    AVG(annual.annual_date - trial.trial_date)
   ,0) AS avg_days_to_upgrade
 FROM trial_plan AS trial
 JOIN annual_plan AS annual
@@ -366,10 +346,9 @@ JOIN annual_plan AS annual
 ````
 
 **Answer:**
-
-<img width="182" alt="image" src="https://user-images.githubusercontent.com/81607668/129856015-4bafa22c-b732-4c71-93d6-c9417e8556b9.png">
-
-- On average, customers take approximately 105 days from the day they join Foodie-Fi to upgrade to an annual plan.
+| average_days_to_upgrade|  
+|------------------------|
+| 105                    |
 
 ### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
@@ -428,27 +407,27 @@ ORDER BY avg_days_to_upgrade;
 
 ```sql
 WITH ranked_cte AS (
-  SELECT 
-    sub.customer_id,  
-  	plans.plan_id,
-    plans.plan_name, 
-	  LEAD(plans.plan_id) OVER ( 
-      PARTITION BY sub.customer_id
-      ORDER BY sub.start_date) AS next_plan_id
-  FROM foodie_fi.subscriptions AS sub
-  JOIN foodie_fi.plans 
-    ON sub.plan_id = plans.plan_id
- WHERE DATE_PART('year', start_date) = 2020
+                   SELECT s.customer_id,  
+                          p.plan_id,
+                          p.plan_name, 
+	                  LEAD(p.plan_id) OVER (PARTITION BY s.customer_id
+                              ORDER BY s.start_date) AS next_plan_id
+                    FROM foodie_fi.subscriptions AS s
+		    JOIN foodie_fi.plans p
+    		    ON s.plan_id = p.plan_id
+ 		    WHERE DATE_PART('year', start_date) = 2020
 )
   
-SELECT 
-  COUNT(customer_id) AS churned_customers
+SELECT COUNT(customer_id) AS churned_customers
 FROM ranked_cte
 WHERE plan_id = 2
   AND next_plan_id = 1;
 ```
 
 **Answer:**
+|churned_customers |  
+|------------------|
+| 0                |
 
 In 2020, there were no instances where customers downgraded from a pro monthly plan to a basic monthly plan.
 
