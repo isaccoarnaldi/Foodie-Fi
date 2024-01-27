@@ -182,7 +182,7 @@ SELECT
   ROUND(100.0 * COUNT(s.customer_id)
     / (SELECT COUNT(DISTINCT customer_id) 
     	FROM foodie_fi.subscriptions)
-      , 2) AS churn_percentage
+      , 1) AS churn_percentage
 FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans AS p
   ON s.plan_id = p.plan_id
@@ -192,7 +192,7 @@ WHERE plans.plan_id = 4; -- Filter results to customers with churn plan only
 **Answer:**
 | churn\_count | churn\_percentage |
 | -------------| ----------------- |
-| 307          | 30.70             |
+| 307          | 30.7              |
 
 
 ### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
@@ -266,10 +266,11 @@ WHERE plan_name = 'trial'
 ```
 
 **Answer:**
+| frequency | percentage |
+| --------- | ---------- |
+| 92        | 9.2        |
 
-<img width="378" alt="image" src="https://user-images.githubusercontent.com/81607668/129834269-98ab360b-985a-4c25-9d42-c89b97ba6ba8.png">
-
-- A total of 92 customers churned immediately after the initial free trial period, representing approximately 9% of the entire customer base.
+- A total of 92 customers churned immediately after the initial free trial period, representing 9.2% of the entire customer base.
 
 ### 6. What is the number and percentage of customer plans after their initial free trial?
 
