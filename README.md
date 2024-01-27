@@ -43,11 +43,9 @@ Cancellation results in a Churn plan record with null pricing, active until the 
 
 
 ## A. Customer Journey
-
 Based on the 8 sample customers provided in the `subscriptions` table, write a brief description of each customer’s onboarding journey.
 
 **Answer:**
-
 ```sql
 SELECT s.customer_id,
        s.plan_id, 
@@ -117,7 +115,7 @@ FROM foodie_fi.subscriptions AS s;
 SELECT TO_CHAR(DATE_TRUNC('month', s.start_date), 'YYYY-MM-DD') AS month,
        COUNT(DISTINCT s.customer_id) AS count
 FROM foodie_fi.subscriptions AS s
-WHERE s.plan_id = 0 -- Trial plan ID is 0 --
+WHERE s.plan_id = 0 -- Trial plan ID is 0
 GROUP BY 1 -- 1 is first column, same as month
 ORDER BY month;
 ```
@@ -177,10 +175,9 @@ Firstly, I undertook the task of identifying:
 Next, in computing the churn rate, the calculation involved dividing the number of churned customers by the total customer count. The outcome was rounded to one decimal place.
 
 ```sql
-SELECT
-  COUNT(DISTINCT s.customer_id) AS churn_count,
-  ROUND(100.0 * COUNT(s.customer_id)
-    / (SELECT COUNT(DISTINCT customer_id) 
+SELECT COUNT(DISTINCT s.customer_id) AS churn_count,
+       ROUND(100.0 * COUNT(s.customer_id)
+     / (SELECT COUNT(DISTINCT customer_id) 
     	FROM foodie_fi.subscriptions)
       , 1) AS churn_percentage
 FROM foodie_fi.subscriptions AS s
