@@ -141,22 +141,21 @@ March has the highest number of trial plans, while February has the lowest numbe
 
 ### 3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
 
-To put it simply, we have to determine the count of plans with start dates on or after 1 January 2021 grouped by plan names. 
-1. Filter plans based on their start dates by including only the plans occurring on or after January 1, 2021.
-2. Calculate the number of customers as the number of events. 
-3. Group results based on the plan names. For better readability, order results in ascending order of the plan ID. 
+- Counted the number of customers as the number of events.
+- Filtered plans occurring after the year 2020.
+- Grouped results based on non-aggregate elements. 
 
 ````sql
 SELECT 
-  plans.plan_id,
-  plans.plan_name,
-  COUNT(sub.customer_id) AS num_of_events
-FROM foodie_fi.subscriptions AS sub
-JOIN foodie_fi.plans
-  ON sub.plan_id = plans.plan_id
-WHERE sub.start_date >= '2021-01-01'
-GROUP BY plans.plan_id, plans.plan_name
-ORDER BY plans.plan_id;
+  p.plan_id,
+  p.plan_name,
+  COUNT(s.customer_id) AS num_of_events
+FROM foodie_fi.subscriptions AS s
+JOIN foodie_fi.plans AS p
+  ON s.plan_id = p.plan_id
+WHERE DATE_PART('year', s.start_date) > 2020
+GROUP BY p.plan_id, p.plan_name
+ORDER BY p.plan_id;
 ````
 
 **Answer:**
@@ -170,31 +169,31 @@ ORDER BY plans.plan_id;
 
 ### 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
-Let's analyze the question:
-- First, we need to determine
-  - The number of customers who have churned, meaning those who have discontinued their subscription.
-  - The total number of customers, including both active and churned ones.
+Firstly, I undertook the task of identifying:
 
-- To calculate the churn rate, we divide the number of churned customers by the total number of customers. The result should be rounded to one decimal place.
+- The count of customers who have churned, indicating those who terminated their subscription.
+- The overall number of customers, encompassing both active and churned individuals.
+
+Next, in computing the churn rate, the calculation involved dividing the number of churned customers by the total customer count. The outcome was rounded to one decimal place.
 
 ```sql
 SELECT
-  COUNT(DISTINCT sub.customer_id) AS churned_customers,
-  ROUND(100.0 * COUNT(sub.customer_id)
+  COUNT(DISTINCT s.customer_id) AS churn_count,
+  ROUND(100.0 * COUNT(s.customer_id)
     / (SELECT COUNT(DISTINCT customer_id) 
     	FROM foodie_fi.subscriptions)
-  ,1) AS churn_percentage
-FROM foodie_fi.subscriptions AS sub
-JOIN foodie_fi.plans
-  ON sub.plan_id = plans.plan_id
+      , 2) AS churn_percentage
+FROM foodie_fi.subscriptions AS s
+JOIN foodie_fi.plans AS p
+  ON s.plan_id = p.plan_id
 WHERE plans.plan_id = 4; -- Filter results to customers with churn plan only
 ```
 
 **Answer:**
+| churn\_count | churn\_percentage |
+| -------------| ----------------- |
+| 307          | 30.70             |
 
-<img width="368" alt="image" src="https://user-images.githubusercontent.com/81607668/129840630-adebba8c-9219-4816-bba6-ba8119f298d9.png">
-
-- Out of the total customer base of Foodie-Fi, 307 customers have churned. This represents approximately 30.7% of the overall customer count.
 
 ### 5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
