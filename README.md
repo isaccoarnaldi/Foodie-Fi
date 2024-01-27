@@ -101,7 +101,8 @@ FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans p
   ON s.plan_id = p.plan_id
 WHERE s.plan_id = 0 -- Trial plan ID is 0
-GROUP BY DATE_TRUNC('month', s.start_date),
+GROUP BY
+         DATE_TRUNC('month', s.start_date),
          p.plan_name
 ORDER BY month_date;
 ```
