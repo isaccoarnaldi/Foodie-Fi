@@ -49,13 +49,15 @@ Based on the 8 sample customers provided in the `subscriptions` table, write a b
 **Answer:**
 
 ```sql
-SELECT
-      s.*,
-      p.plan_name,
+SELECT s.customer_id,
+       s.plan_id, 
+       TO_CHAR(s.start_date, 'YYYY-MM-DD') AS start_date,
+       p.plan_name
 FROM foodie_fi.subscriptions AS s
 JOIN foodie_fi.plans AS p
-     ON s.plan_id = p.plan_id
-WHERE s.customer_id IN (1,2,11,13,15,16,18,19);
+  ON s.plan_id = p.plan_id
+WHERE s.customer_id BETWEEN 1 AND 19
+ORDER BY s.customer_id, p.plan_id
 ```
 
 | customer\_id | plan\_id | start\_date |  plan\_name   |
