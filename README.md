@@ -93,7 +93,7 @@ Based on the findings, three highlighted customers illustrate distinct onboardin
 
 ***
 
-## B. Data Analysis Questions
+### B. Data Analysis Questions
 
 #### 1. How many customers has Foodie-Fi ever had?
 
