@@ -1,6 +1,6 @@
 # 🥑 Case Study #3: Foodie-Fi
 
-<img src="https://github.com/isaccoarnaldi/Foodie-Fi/blob/main/1.png?raw=true" width="500" height="520" alt="image">
+<img src="https://user-images.githubusercontent.com/81607668/129742132-8e13c136-adf2-49c4-9866-dec6be0d30f0.png" width="500" height="520" alt="image">
 
 ## 📚 Table of Contents
 - [Business Task](#business-task)
@@ -75,18 +75,16 @@ Based on the findings, three highlighted customers illustrate distinct onboardin
 
 ### 1. How many customers has Foodie-Fi ever had?
 
-To determine the count of unique customers for Foodie-Fi, I utilize the `COUNT()` function wrapped around `DISTINCT`.
-
 ```sql
-SELECT COUNT(DISTINCT customer_id) AS num_of_customers
-FROM foodie_fi.subscriptions;
+SELECT COUNT(DISTINCT s.customer_id) AS unique_customers
+FROM foodie_fi.subscriptions AS s;
 ```
 
 **Answer:**
 
 <img width="159" alt="image" src="https://user-images.githubusercontent.com/81607668/129764903-bb0480aa-bf92-46f7-b0e1-f4d0f9e96ae1.png">
 
-- Foodie-Fi has 1,000 unique customers.
+
 
 ### 2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
 
