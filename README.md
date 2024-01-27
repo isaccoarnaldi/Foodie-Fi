@@ -10,7 +10,7 @@
 
 Please note that all the information regarding the case study has been sourced from the following link: [here](https://8weeksqlchallenge.com/case-study-3/). 
 
-#
+***
 
 ## Business Task
 Danny launched Foodie-Fi in 2020, a streaming service exclusively for cooking shows with monthly and annual subscriptions. The startup, founded with a data-driven approach, focuses on using subscription-style digital data for key business insights related to customer journeys, payments, and overall performance. 
@@ -24,7 +24,7 @@ This case study focuses on using subscription-style digital data to answer vario
 
 <img width="207" alt="image" src="https://user-images.githubusercontent.com/81607668/135704535-a82fdd2f-036a-443b-b1da-984178166f95.png"> 		
 
-***
+#
 **Table 2: `subscriptions`**
 
 <img width="261" alt="Screenshot 2021-08-17 at 11 36 10 PM" src="https://user-images.githubusercontent.com/81607668/129756709-75919d79-e1cd-4187-a129-bdf90a65e196.png">
