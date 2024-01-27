@@ -192,12 +192,12 @@ WHERE s.plan_id = 4; -- Filter results to customers with churn plan only
 	- Used `DENSE_RANK`() to assign rankings to customer plans: Trial Plan - Rank 1, Churned - Rank 2.
 - WHERE clause conditions:
 	- Filtered for `plan_id = 4`.
-	- Identified churn after trial with `row_num = 2`.
+	- Identified churn after trial with `rank_num = 2`.
 - Counted churned customers using `CASE` statement:
-	- Checked `row_num = 2` and `plan_name = 'churn'`.
+	- Checked `rank_num = 2` and `plan_name = 'churn'`.
 - Calculated churn percentage:
 	- Divided count of churned customers by total distinct customer IDs.
-	- Rounded percentage to a whole number.
+	- Rounded percentage to whole number.
 
 ```sql
 WITH ranked_cte AS (
@@ -219,7 +219,7 @@ SELECT
                        ELSE 0 END) 
           / (SELECT COUNT(DISTINCT customer_id) 
              FROM foodie_fi.subscriptions)
-          ) AS percentage
+          , 0) AS percentage
 FROM ranked_cte
 WHERE plan_id = 4 -- Filter to churn plan.
 AND rank_num = 2; -- Customers who have churned immediately after trial have churn plan ranked as 2.
@@ -228,28 +228,25 @@ AND rank_num = 2; -- Customers who have churned immediately after trial have chu
 **Answer:**
 | churned_customers | percentage |
 | ----------------- | ---------- |
-| 92                | 9.2        |
-
-- A total of 92 customers churned immediately after the initial free trial period, representing 9.2% of the entire customer base.
+| 92                | 9          |
 
 ### 6. What is the number and percentage of customer plans after their initial free trial?
 
 ```sql
 WITH next_plans AS (
-                   SELECT customer_id, 
-                          plan_id, 
-                          LEAD(plan_id) OVER(PARTITION BY customer_id 
-                                        ORDER BY plan_id) as next_plan_id
-                   FROM foodie_fi.subscriptions
+                   SELECT s.customer_id, 
+                          s.plan_id, 
+                          LEAD(s.plan_id) OVER(PARTITION BY s.customer_id 
+                                        ORDER BY s.plan_id) AS next_plan_id
+                   FROM foodie_fi.subscriptions s
                    )
 
-SELECT 
-       next_plan_id AS plan_id, 
+SELECT next_plan_id AS plan_id, 
        COUNT(customer_id) AS converted_customers,
-    ROUND(100 * COUNT(customer_id)::NUMERIC 
-    / (SELECT COUNT(DISTINCT customer_id)
-       FROM foodie_fi.subscriptions)
-   ,1) AS conversion_percentage
+         ROUND(100 * COUNT(customer_id)::NUMERIC 
+      / (SELECT COUNT(DISTINCT customer_id)
+         FROM foodie_fi.subscriptions)
+      , 1) AS conversion_percentage
 FROM next_plans
 WHERE next_plan_id IS NOT NULL 
   AND plan_id = 0
@@ -272,10 +269,10 @@ ORDER BY next_plan_id;
 
 ```sql
 WITH cte AS(
-           SELECT *,
-                  ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date DESC) AS rank
-           FROM foodie_fi.subscriptions
-           WHERE start_date <= '2020-12-31'
+           SELECT s.*,
+                  ROW_NUMBER() OVER(PARTITION BY s.customer_id ORDER BY s.start_date DESC) AS rank
+           FROM foodie_fi.subscriptions s
+           WHERE s.start_date <= '2020-12-31'
 )
 SELECT plan_id,
        COUNT(DISTINCT customer_id) AS number_of_customer,
@@ -292,14 +289,14 @@ GROUP BY plan_id
 | 1        | 224                  | 22.4       |
 | 2        | 326                  | 32.6       |
 | 3        | 195                  | 19.5       |
-| 4        | 235                  | 23.6       |
+| 4        | 236                  | 23.6       |
 
 
 ### 8. How many customers have upgraded to an annual plan in 2020?
 
 ```sql
-SELECT COUNT(DISTINCT customer_id) AS num_of_customers
-FROM foodie_fi.subscriptions
+SELECT COUNT(DISTINCT s.customer_id) AS num_of_customers
+FROM foodie_fi.subscriptions s
 WHERE plan_id = 3
   AND start_date <= '2020-12-31';
 ```
@@ -314,24 +311,20 @@ WHERE plan_id = 3
 ````sql
 WITH trial_plan AS (
 -- trial_plan CTE: Filter results to include only the customers subscribed to the trial plan.
-  SELECT 
-    customer_id, 
-    start_date AS trial_date
-  FROM foodie_fi.subscriptions
-  WHERE plan_id = 0
-), annual_plan AS (
+     SELECT s.customer_id, 
+            s.start_date AS trial_date
+     FROM foodie_fi.subscriptions s
+     WHERE s.plan_id = 0
+),
+annual_plan AS (
 -- annual_plan CTE: Filter results to only include the customers subscribed to the pro annual plan.
-  SELECT 
-    customer_id, 
-    start_date AS annual_date
-  FROM foodie_fi.subscriptions
-  WHERE plan_id = 3
+     SELECT s.customer_id, 
+            s.start_date AS annual_date
+     FROM foodie_fi.subscriptions s
+     WHERE s.plan_id = 3
 )
 -- Find the average of the differences between the start date of a trial plan and a pro annual plan.
-SELECT 
-  ROUND(
-    AVG(annual.annual_date - trial.trial_date)
-  ,0) AS avg_days_to_upgrade
+SELECT ROUND(AVG(annual.annual_date - trial.trial_date), 0) AS avg_days_to_upgrade
 FROM trial_plan AS trial
 JOIN annual_plan AS annual
   ON trial.customer_id = annual.customer_id;
@@ -344,42 +337,39 @@ JOIN annual_plan AS annual
 
 ### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
-To understand how the `WIDTH_BUCKET()` function works in creating buckets of 30-day periods, you can refer to this [StackOverflow](https://stackoverflow.com/questions/50518548/creating-a-bin-column-in-postgres-to-check-an-integer-and-return-a-string) answer.
+To understand how the `WIDTH_BUCKET()` function works in creating buckets of 30-day periods, refer to this [StackOverflow](https://stackoverflow.com/questions/50518548/creating-a-bin-column-in-postgres-to-check-an-integer-and-return-a-string) answer.
 
 ```sql
 WITH trial_plan AS (
 -- trial_plan CTE: Filter results to include only the customers subscribed to the trial plan.
-  SELECT 
-    customer_id, 
-    start_date AS trial_date
-  FROM foodie_fi.subscriptions
-  WHERE plan_id = 0
-), annual_plan AS (
+     SELECT s.customer_id, 
+            s.start_date AS trial_date
+     FROM foodie_fi.subscriptions s
+     WHERE s.plan_id = 0
+),
+annual_plan AS (
 -- annual_plan CTE: Filter results to only include the customers subscribed to the pro annual plan.
-  SELECT 
-    customer_id, 
-    start_date AS annual_date
-  FROM foodie_fi.subscriptions
-  WHERE plan_id = 3
-), bins AS (
+    SELECT s.customer_id, 
+           s.start_date AS annual_date
+    FROM foodie_fi.subscriptions s
+    WHERE s.plan_id = 3
+),
+bins AS (
 -- bins CTE: Put customers in 30-day buckets based on the average number of days taken to upgrade to a pro annual plan.
-  SELECT 
-    WIDTH_BUCKET(annual.annual_date - trial.trial_date, 0, 365, 12) AS avg_days_to_upgrade
-  FROM trial_plan AS trial
-  JOIN annual_plan AS annual
+   SELECT WIDTH_BUCKET(annual.annual_date - trial.trial_date, 0, 365, 12) AS avg_days_to_upgrade
+   FROM trial_plan AS trial
+   JOIN annual_plan AS annual
     ON trial.customer_id = annual.customer_id
 )
   
-SELECT 
-  ((avg_days_to_upgrade - 1) * 30 || ' - ' || avg_days_to_upgrade * 30 || ' days') AS bucket, 
-  COUNT(*) AS num_of_customers
+SELECT ((avg_days_to_upgrade - 1) * 30 || ' - ' || avg_days_to_upgrade * 30 || ' days') AS bucket, 
+       COUNT(*) AS num_of_customers
 FROM bins
 GROUP BY avg_days_to_upgrade
 ORDER BY avg_days_to_upgrade;
 ```
 
 **Answer:**
-
 | bucket         | num_of_customers |
 | -------------- | ---------------- |
 | 0 - 30 days    | 49               |
@@ -399,15 +389,15 @@ ORDER BY avg_days_to_upgrade;
 
 ```sql
 WITH ranked_cte AS (
-                   SELECT s.customer_id,  
-                          p.plan_id,
-                          p.plan_name, 
-	                  LEAD(p.plan_id) OVER (PARTITION BY s.customer_id
+     SELECT s.customer_id,  
+            p.plan_id,
+            p.plan_name, 
+	    LEAD(p.plan_id) OVER (PARTITION BY s.customer_id
                               ORDER BY s.start_date) AS next_plan_id
-                    FROM foodie_fi.subscriptions AS s
-		    JOIN foodie_fi.plans p
-    		    ON s.plan_id = p.plan_id
- 		    WHERE DATE_PART('year', start_date) = 2020
+     FROM foodie_fi.subscriptions AS s
+     JOIN foodie_fi.plans p
+       ON s.plan_id = p.plan_id
+     WHERE DATE_PART('year', start_date) = 2020
 )
   
 SELECT COUNT(customer_id) AS churned_customers
