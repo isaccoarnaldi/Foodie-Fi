@@ -95,7 +95,7 @@ Based on the findings, three highlighted customers illustrate distinct onboardin
 
 ## B. Data Analysis Questions
 
-### 1. How many customers has Foodie-Fi ever had?
+#### 1. How many customers has Foodie-Fi ever had?
 
 ```sql
 SELECT COUNT(DISTINCT s.customer_id) AS distinct_customers
