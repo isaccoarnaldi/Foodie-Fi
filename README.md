@@ -117,7 +117,7 @@ FROM foodie_fi.subscriptions AS s;
 SELECT TO_CHAR(DATE_TRUNC('month', s.start_date), 'YYYY-MM-DD') AS month,
        COUNT(DISTINCT s.customer_id) AS count
 FROM foodie_fi.subscriptions AS s
-WHERE s.plan_id = 0 -- Trial plan ID is 0
+WHERE s.plan_id = 0 -- Trial plan ID is 0 --
 GROUP BY 1 -- 1 is first column, same as month
 ORDER BY month;
 ```
