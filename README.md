@@ -84,8 +84,8 @@ FROM foodie_fi.subscriptions AS s;
 
 **Answer:**
 | distinct_customers|
-| --------- | 
-| 1000      | 
+| ----------------- | 
+| 1000              | 
 
 ### 2. What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
 
@@ -95,35 +95,30 @@ FROM foodie_fi.subscriptions AS s;
 ```sql
 SELECT
   DATE_TRUNC('month', s.start_date) AS month,
-  p.plan_name
   COUNT(DISTINCT s.customer_id) AS count
 FROM foodie_fi.subscriptions AS s
-JOIN foodie_fi.plans p
-  ON s.plan_id = p.plan_id
 WHERE s.plan_id = 0 -- Trial plan ID is 0
-GROUP BY
-         DATE_TRUNC('month', s.start_date),
-         p.plan_name
-ORDER BY month_date;
+GROUP BY 1
+ORDER BY month;
 ```
 
 **Answer:**
-| month      | plan_name | count |
-| ---------- |-----------| ----- |
-| 2020-01-01 |   trial   | 88    |
-| 2020-02-01 |   trial   | 68    |
-| 2020-03-01 |   trial   | 94    |
-| 2020-04-01 |   trial   | 81    |
-| 2020-05-01 |   trial   | 88    |
-| 2020-06-01 |   trial   | 79    |
-| 2020-07-01 |   trial   | 89    |
-| 2020-08-01 |   trial   | 88    |
-| 2020-09-01 |   trial   | 87    |
-| 2020-10-01 |   trial   | 79    |
-| 2020-11-01 |   trial   | 75    |
-| 2020-12-01 |   trial   | 84    |
+| month      | count |
+| ---------- | ----- |
+| 2020-01-01 | 88    |
+| 2020-02-01 | 68    |
+| 2020-03-01 | 94    |
+| 2020-04-01 | 81    |
+| 2020-05-01 | 88    |
+| 2020-06-01 | 79    |
+| 2020-07-01 | 89    |
+| 2020-08-01 | 88    |
+| 2020-09-01 | 87    |
+| 2020-10-01 | 79    |
+| 2020-11-01 | 75    |
+| 2020-12-01 | 84    |
 
-Among all the months, March has the highest number of trial plans, while February has the lowest number of trial plans.
+March has the highest number of trial plans, while February has the lowest number of trial plans.
 
 ### 3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
 
