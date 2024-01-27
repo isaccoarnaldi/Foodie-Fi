@@ -43,7 +43,7 @@ Cancellation results in a Churn plan record with null pricing, active until the 
 
 
 
-## A. Customer Journey
+# A. Customer Journey
 Based on the 8 sample customers provided in the `subscriptions` table, write a brief description of each customer’s onboarding journey.
 
 **Answer:**
